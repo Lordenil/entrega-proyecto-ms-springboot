@@ -1,139 +1,179 @@
-# Sistema de Gestión de Citas
+# Spring Boot Microservices Project
 
-## 📝 Descripción del Proyecto
+(Eureka Server, Config Server, API Gateway, Kafka, File Storage, JWT, Authentication, Authorization, Redis, Docker)
 
-Este proyecto esta enfocado en la gestions de citas y configuracion de horarios para negocios tipo peluquerias, spa, barberias, entre otros.
-En este se tienen las funcionalidades de:
+8 services whose name are shown below have been devised within the scope of this project.
 
-- El registrar empleados
-- El registrar usuarios
-- Configuracion de horario laboral
-- Asignación de citas
-- Modulo de reportes
+- Config Server
+- Eureka Server
+- API Gateway
+- Auth Service
+- Job Service
+- User Service
+- Notification Service
+- File Storage
 
-Tecnologías usadas:
+¡Perfecto! Entender y documentar la arquitectura de un proyecto de **microservicios** es una excelente práctica, sobre todo para aclarar responsabilidades y facilitar futuras modificaciones.
 
-- **Spring Boot** como framework principal
-- **JPA** para persistencia
-- **PostgreSQL** Base de datos local
-
----
-
-## 📋 Reglas de Negocio
-
-### Configuración Horarios
-
-- **RN1**: Las horas laborales no deben solaparce para un mismo día.
-- **RN2**: No se pueden tener registros que pasen al día siguiente.
-
-### Asignación de Citas
-
-- **RN3**: Una cita solo se debe asignar si el empleado esta disponible en el horario.
-- **RN4**: El usuario solo puede tener una cita al día.
+Te ayudaré a **documentar el rol y funcionalidad de cada uno de los servicios** mencionados en tu proyecto de Spring Boot. Vamos a hacerlo de manera clara y profesional, como para incluirlo en un `README.md` o en la documentación técnica del sistema.
 
 ---
 
-## 📊 Reportes Posibles en la logica
+## 🧾 Documentación de servicios en la arquitectura de microservicios
 
-✅ Empleados con mas citas  
-✅ Ususarios con mas citas  
-✅ Empleado con msa jornada laborar
+### 🧩 1. **Config Server**
+
+**Rol:**
+Servidor centralizado de configuración.
+
+**Funcionalidad:**
+Proporciona archivos de configuración (`application.yml` o `application.properties`) a los demás microservicios. Permite centralizar y actualizar configuraciones sin necesidad de redeploy.
+
+**Tecnología común:**
+Spring Cloud Config Server.
 
 ---
 
-## 📂 Estructura del Proyecto
+### 📡 2. **Eureka Server**
 
+**Rol:**
+Servicio de descubrimiento.
+
+**Funcionalidad:**
+Permite que los microservicios se registren automáticamente y se descubran entre sí. Elimina la necesidad de conocer direcciones IP o puertos fijos.
+Cuando un servicio se inicia, se registra en Eureka.
+
+**Tecnología común:**
+Spring Cloud Netflix Eureka.
+
+---
+
+### 🌐 3. **API Gateway**
+
+**Rol:**
+Punto de entrada único a todo el sistema.
+
+**Funcionalidad:**
+
+- Redirige las solicitudes entrantes a los microservicios correspondientes.
+- Aplica filtros de seguridad (como autenticación de tokens).
+- Puede manejar CORS, logging, throttling, etc.
+
+**Tecnología común:**
+Spring Cloud Gateway.
+
+---
+
+### 🔐 4. **Auth Service**
+
+**Rol:**
+Servicio de autenticación y autorización.
+
+**Funcionalidad:**
+
+- Registro y login de usuarios (ADMIN / USER).
+- Generación y validación de tokens JWT.
+- Control de acceso a los endpoints según el rol del usuario.
+
+**Posible stack:**
+Spring Security + JWT + BCrypt.
+
+---
+
+### 💼 5. **Job Service**
+
+**Rol:**
+Gestión de trabajos/ofertas/labores.
+
+**Funcionalidad:**
+
+- Crear, actualizar, eliminar y listar ofertas de trabajo.
+- Asociar trabajos con usuarios (por ejemplo, postulaciones o publicaciones).
+- Gestionar categorías, descripciones, requisitos, etc.
+
+---
+
+### 👤 6. **User Service**
+
+**Rol:**
+Gestión de información del usuario.
+
+**Funcionalidad:**
+
+- Consultar y actualizar el perfil del usuario.
+- Relacionarse con los servicios de Auth y Job.
+- Posiblemente tenga lógica como currículum, historial, etc.
+
+---
+
+### 📧 7. **Notification Service**
+
+**Rol:**
+Enviar notificaciones a los usuarios.
+
+**Funcionalidad:**
+
+- Puede enviar correos electrónicos o mensajes push.
+- Notifica sobre nuevos trabajos, cambios de estado, etc.
+- Suele comunicarse con otros servicios mediante colas (RabbitMQ, Kafka, etc.).
+
+---
+
+### 🗂️ 8. **File Storage Service**
+
+**Rol:**
+Gestión de archivos.
+
+**Funcionalidad:**
+
+- Subida y descarga de archivos como CV, imágenes de perfil, etc.
+- Almacenamiento local o en la nube (S3, MinIO, etc.).
+- Asocia archivos con usuarios u ofertas de trabajo.
+
+---
+
+## 🗺️ Mapa general del flujo
+
+```plaintext
+                   [ Usuario Frontend ]
+                          │
+                          ▼
+                   [ API Gateway ]
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+ [ Auth Service ]  [ Job Service ]   [ User Service ]
+                          │
+                          ▼
+                [ Notification Service ]
+                          │
+                          ▼
+                [ File Storage Service ]
 ```
-src/
-├── main/
-│   ├── java/
-│   │   └── com/manage/appointment/
-│   │       ├── controller/       # Controladores REST
-│   │       ├── dto/              # Data Transfer Object
-│   │       ├── entity/           # Entidades JPA
-│   │       ├── exception/        # Controle de excepciones
-│   │       ├── repository/       # Repositorios Spring Data
-│   │       ├── service/          # Lógica de negocio
-│   │       │   └── serviceIMP/   # Implementaciones de servicios
-│   └── resources/
-│       ├── application.properties
-│       ├── data.sql              # Datos iniciales
-│       └── schema.sql            # Script de esquema base de datos
-```
+
+Los microservicios obtienen configuración desde el **Config Server**
+Todos los servicios se registran en **Eureka Server**
+Todos los llamados pasan por el **API Gateway**
 
 ---
 
-## ⚙️ Instrucciones de Instalación
+### 🔨 Run the App
 
-### 📦 Prerrequisitos
+<b>Local</b>
 
-- Java 17
-- Maven
-- IDE (IntelliJ o VSCode)
+<b>1 )</b> Clone project
 
-### ▶️ Pasos para ejecutar
+<b>2 )</b> Go to the project's home directory : `cd spring-boot-microservices`
 
-1. Clonar:
+<b>3 )</b> Run docker compose <b>`docker compose up`</b></b>
 
-git clone https://github.com/Lordenil/appointment-manage.git
+<b>4 )</b> Run <b>Eureka Server</b>
 
-2. Ejecutar con JetBrains
+<b>5 )</b> Run <b>Gateway</b>
 
-3. Configurar las variables de entorno ".ENV"
+<b>6 )</b> Run <b>Config Server</b>
 
-4. Acceder por consola a la ruta del repositorio "appointment-manage":
+<b>7 )</b> Run other services (<b>auth-service</b>, <b>user-service</b>, <b>job-service</b>, <b>notification-service</b> and lastly <b>
+file-storage</b>)
 
-5. Ejecutar el comando "docker compose up -d" para subir la base de datos
-
-## 📮 Colección de APIs (Postman)
-
----
-
-POST
-User Create
-http://localhost:8080/api/users/registerBody
-raw (json)
-{
-"name": "David",
-"email": "david@gmail.com",
-"password": "123"
-}
-
----
-
-POST
-Employee Create
-http://localhost:8080/api/employees/register
-raw (json)
-{
-"name": "Carlos Pérez"
-}
-
----
-
-POST
-Schedule Create
-http://localhost:8080/api/employees/register
-raw (json)
-{
-"day": "MONDAY",
-"initialTime": "08:00:00",
-"endTime": "12:00:00",
-"employeeId": 1
-}
-
----
-
-POST
-Appointment Create
-http://localhost:8080/api/appointments
-raw (json)
-{
-"date": "2025-05-28",
-"initialTime": "10:00",
-"endTime": "11:00",
-"userId": 1,
-"employeeId": 2
-}
-
----
+<b>8 )</b> For swagger ui localhost:8080/v1/{service-name}/swagger-ui/index.html</b>
