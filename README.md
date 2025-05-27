@@ -13,10 +13,6 @@
 - Notification Service
 - File Storage
 
-¡Perfecto! Entender y documentar la arquitectura de un proyecto de **microservicios** es una excelente práctica, sobre todo para aclarar responsabilidades y facilitar futuras modificaciones.
-
-Te ayudaré a **documentar el rol y funcionalidad de cada uno de los servicios** mencionados en tu proyecto de Spring Boot. Vamos a hacerlo de manera clara y profesional, como para incluirlo en un `README.md` o en la documentación técnica del sistema.
-
 ---
 
 ## 🧾 Documentación de servicios en la arquitectura de microservicios
