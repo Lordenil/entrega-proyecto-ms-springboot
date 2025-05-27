@@ -1,81 +1,139 @@
-# Proyecto 1ra Entrega - Desarrollo de API REST con Spring Boot
+# Sistema de Gestión de Citas
 
-## 📌 Objetivo
-Desarrollar una aplicación Spring Boot que resuelva un problema de negocio real, aplicando buenas prácticas de diseño, validaciones, documentación y manejo de datos. El proyecto debe ser entregado con código funcional, documentación técnica y evidencias de pruebas.
+## 📝 Descripción del Proyecto
+
+Este proyecto esta enfocado en la gestions de citas y configuracion de horarios para negocios tipo peluquerias, spa, barberias, entre otros.
+En este se tienen las funcionalidades de:
+
+- El registrar empleados
+- El registrar usuarios
+- Configuracion de horario laboral
+- Asignación de citas
+- Modulo de reportes
+
+Tecnologías usadas:
+
+- **Spring Boot** como framework principal
+- **JPA** para persistencia
+- **PostgreSQL** Base de datos local
 
 ---
 
-## 🛠 Requisitos Técnicos
+## 📋 Reglas de Negocio
 
-### 1. Definición del Negocio
-- **Tema**: Elegir un dominio (ej: veterinaria, biblioteca, clínica médica, e-commerce).  
-- **Reglas de Negocio**:  
-  - Definir al menos 5 reglas operativas (ej: validaciones de stock, restricciones de horarios, límites de reservas).  
-  - Ejemplo para una veterinaria:  
-    ```plaintext
-    1. Una mascota no puede tener más de 3 citas activas en un mismo día.
-    2. Los medicamentos vencidos no pueden ser recetados.
-    ```
+### Configuración Horarios
 
-### 2. Modelado de Datos
-- **Entidades JPA**:  
-  - Mínimo 4 entidades relacionadas (ej: `Cliente`, `Producto`, `Pedido`, `Empleado`).  
-  - Diagrama UML/ER con relaciones (`@OneToMany`, `@ManyToOne`).  
-  - Trabajar con H2 o DB en linea como supabase
-- **DTOs**: Usar Data Transfer Objects para todas las operaciones de entrada/salida.
+- **RN1**: Las horas laborales no deben solaparce para un mismo día.
+- **RN2**: No se pueden tener registros que pasen al día siguiente.
 
-### 3. Implementación de APIs
-| **Endpoint**              | **Método** | **Descripción**                     | **Validaciones**                          |
-|---------------------------|------------|-------------------------------------|-------------------------------------------|
-| `POST /api/clientes`      | POST       | Crear cliente                       | Email válido, teléfono de 10 dígitos      |
-| `GET /api/productos`      | GET        | Listar productos en stock           | Filtrar por categoría/disponibilidad      |
-| `PUT /api/pedidos/{id}`   | PUT        | Actualizar estado de pedido         | Solo estados permitidos (ej: "En camino") |
+### Asignación de Citas
 
-### 4. Validaciones Avanzadas
-- Anotaciones personalizadas (ej: `@FechaVencimientoValida`).  
-- Manejo de errores globales con mensajes claros:  
-  ```json
-  {
-    "timestamp": "2024-10-05T10:00:00",
-    "status": 400,
-    "error": "Solicitud inválida",
-    "details": {
-      "email": "Debe ser un correo válido"
-    }
-  }
+- **RN3**: Una cita solo se debe asignar si el empleado esta disponible en el horario.
+- **RN4**: El usuario solo puede tener una cita al día.
 
-### 5. **Ejemplo Estructura del Proyecto**
-```plaintext
+---
+
+## 📊 Reportes Posibles en la logica
+
+✅ Empleados con mas citas  
+✅ Ususarios con mas citas  
+✅ Empleado con msa jornada laborar
+
+---
+
+## 📂 Estructura del Proyecto
+
+```
 src/
 ├── main/
 │   ├── java/
-│   │   └── com/[dominio]/
-│   │       ├── controller/   # Controladores REST
-│   │       ├── model/        # Entidades JPA
-│   │       ├── repository/   # Repositorios Spring Data
-│   │       ├── service/      # Lógica de negocio
-│   │       ├── dto/         # Data Transfer Objects
-│   │       ├── config/      # Configuraciones (Swagger, etc.)
-│   │       └── exception/   # Manejo de errores
+│   │   └── com/manage/appointment/
+│   │       ├── controller/       # Controladores REST
+│   │       ├── dto/              # Data Transfer Object
+│   │       ├── entity/           # Entidades JPA
+│   │       ├── exception/        # Controle de excepciones
+│   │       ├── repository/       # Repositorios Spring Data
+│   │       ├── service/          # Lógica de negocio
+│   │       │   └── serviceIMP/   # Implementaciones de servicios
 │   └── resources/
 │       ├── application.properties
-│       └── data.sql        # Datos iniciales
-|       └── schema.sql      # Base Datos
+│       ├── data.sql              # Datos iniciales
+│       └── schema.sql            # Script de esquema base de datos
 ```
 
-### 6. Criterios de Evaluación - Proyecto Spring Boot
+---
 
-## Tabla de Evaluación
+## ⚙️ Instrucciones de Instalación
 
-| Categoría                     | Peso  | Detalles                                                                 |
-|-------------------------------|-------|--------------------------------------------------------------------------|
-| **Funcionalidad**             | 30%   | - APIs implementadas cumplen con todas las reglas de negocio definidas<br>- Todos los endpoints funcionan correctamente<br>- Relaciones entre entidades funcionan como se especifica |
-| **Validaciones y Excepciones**| 25%   | - Uso adecuado de anotaciones de validación (`@Valid`, `@Pattern`, etc.)<br>- Mensajes de error claros y personalizados<br>- Validación de reglas de negocio en capa de servicio |
-| **Documentación**             | 20%   | - `README.md` completo con:<br>  • Descripción del proyecto<br>  • Diagrama de entidades<br>  • Instrucciones de instalación<br>  • Ejemplos de requests/responses<br>- Documentación Swagger/OpenAPI completa<br>- Colección Postman/Insomnia compartida con todos los endpoints |
-| **Estructura de Código**      | 15%   | - Uso correcto de DTOs para transferencia de datos<br>- Separación clara en capas (controller, service, repository)<br>- Nombramiento consistente (variables, métodos, clases)<br>- Inyección de dependencias adecuada<br>- Código limpio y bien organizado |
-| **Pruebas**                   | 10%   | - Evidencias de pruebas manuales con capturas de pantalla<br>- Colección Postman/Insomnia funcional<br>- Pruebas de happy path y edge cases<br>- Validación de respuestas exitosas y de errores |
+### 📦 Prerrequisitos
 
-## Notas Adicionales
+- Java 17
+- Maven
+- IDE (IntelliJ o VSCode)
 
-- Copiar el proyecto por medio de un fork
-- Entregar por medio de un PR
+### ▶️ Pasos para ejecutar
+
+1. Clonar:
+
+git clone https://github.com/Lordenil/appointment-manage.git
+
+2. Ejecutar con JetBrains
+
+3. Configurar las variables de entorno ".ENV"
+
+4. Acceder por consola a la ruta del repositorio "appointment-manage":
+
+5. Ejecutar el comando "docker compose up -d" para subir la base de datos
+
+## 📮 Colección de APIs (Postman)
+
+---
+
+POST
+User Create
+http://localhost:8080/api/users/registerBody
+raw (json)
+{
+"name": "David",
+"email": "david@gmail.com",
+"password": "123"
+}
+
+---
+
+POST
+Employee Create
+http://localhost:8080/api/employees/register
+raw (json)
+{
+"name": "Carlos Pérez"
+}
+
+---
+
+POST
+Schedule Create
+http://localhost:8080/api/employees/register
+raw (json)
+{
+"day": "MONDAY",
+"initialTime": "08:00:00",
+"endTime": "12:00:00",
+"employeeId": 1
+}
+
+---
+
+POST
+Appointment Create
+http://localhost:8080/api/appointments
+raw (json)
+{
+"date": "2025-05-28",
+"initialTime": "10:00",
+"endTime": "11:00",
+"userId": 1,
+"employeeId": 2
+}
+
+---
